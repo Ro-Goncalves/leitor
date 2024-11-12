@@ -1,7 +1,6 @@
 from docling.document_converter import DocumentConverter
 import streamlit as st
 import os, base64
-from dotenv import load_dotenv
 from leitor.llm_prompts import gerar_sumario
 
 def status_inicial():
@@ -9,6 +8,8 @@ def status_inicial():
         st.session_state.texto_exportado = ""
     if 'sumario_artigo' not in st.session_state:
         st.session_state.sumario_artigo = []
+    if 'error_store' not in st.session_state:
+        st.session_state.error_store = None
 
 def list_articles():
     """
@@ -42,11 +43,13 @@ def read_article(article_name):
 def load_article(article_name):
     with open(os.path.join("leitor/assets/artigos", article_name), "rb") as f:
         return base64.b64encode(f.read()).decode('utf-8')
-
+                
 def main():
     st.set_page_config(layout="wide", page_title="Tradutor", page_icon="🤖")
+    
     st.title("🤖📄✨ Tradutor")
     st.info("Diagramadores: Conecte os pontos, desenhe o futuro e torne cada processo mais claro do que nunca! 🔗✨")
+    
     
     with st.sidebar:
         # Lista os artigos disponíveis
@@ -77,7 +80,7 @@ def main():
                     st.session_state.sumario_artigo = gerar_sumario(st.session_state.texto_exportado)            
                 
                 for menu in st.session_state.sumario_artigo:
-                    st.write(menu.replace("##", ""))
+                    st.write(menu)
 
         with col_processar:
             if st.button("Processar", use_container_width=True):
@@ -86,7 +89,10 @@ def main():
         st.button("Reiniciar", use_container_width=True)
 
         st.divider()
-
+        
+        if st.session_state.error_store:
+            st.error(st.session_state.error_store)
+    
     if st.session_state.texto_exportado:
 
         col_pdf, col_texto = st.columns(2)
@@ -103,7 +109,6 @@ def main():
         
         
 
-if __name__ == "__main__":
-    load_dotenv()
+if __name__ == "__main__":    
     status_inicial()
     main()

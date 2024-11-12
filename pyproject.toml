@@ -16,7 +16,6 @@ llama-index-node-parser-docling = "^0.2.0"
 llama-index-readers-file = "^0.2.2"
 llama-index-llms-gemini = "^0.3.7"
 
-
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
