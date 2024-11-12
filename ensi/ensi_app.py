@@ -16,7 +16,7 @@ def list_articles():
     Lista todos os artigos na pasta assets/artigos
     Retorna uma lista com os nomes dos arquivos
     """
-    articles_path = "leitor/assets/artigos"
+    articles_path = "ensi/assets/artigos"
     
     # Verifica se o diretório existe
     if not os.path.exists(articles_path):
@@ -34,14 +34,14 @@ def read_article(article_name):
     """
     try:
         converter = DocumentConverter()
-        result = converter.convert(os.path.join("leitor/assets/artigos", article_name))
+        result = converter.convert(os.path.join("ensi/assets/artigos", article_name))
         return result.document.export_to_markdown()
     except Exception as e:
         st.error(f"Erro ao ler o artigo: {str(e)}")
         return None
     
 def load_article(article_name):
-    with open(os.path.join("leitor/assets/artigos", article_name), "rb") as f:
+    with open(os.path.join("ensi/assets/artigos", article_name), "rb") as f:
         return base64.b64encode(f.read()).decode('utf-8')
                 
 def main():

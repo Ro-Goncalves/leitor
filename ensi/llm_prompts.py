@@ -1,6 +1,7 @@
 from llama_index.llms.gemini import Gemini
 import ast
 import streamlit as st
+import os
 
 gemini = Gemini()
 
@@ -30,9 +31,9 @@ def gerar_sumario(texto_artigo):
 
         Execute essa tarefa de maneira objetiva e direta.
     """
-
-    completion = gemini.complete(prompt).text
+   
     try:
+        completion = gemini.complete(prompt).text
         sumario_list = ast.literal_eval(completion)
         return sumario_list
     except Exception as e:
