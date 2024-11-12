@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "leitor"
+name = "ensi"
 version = "0.1.0"
 description = ""
 authors = ["rodrigo.goncalves <ro.go.calves@gmail.com>"]

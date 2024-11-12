@@ -1,7 +1,7 @@
 from docling.document_converter import DocumentConverter
 import streamlit as st
 import os, base64
-from leitor.llm_prompts import gerar_sumario
+from ensi.llm_prompts import gerar_sumario
 
 def status_inicial():
     if 'texto_exportado' not in st.session_state:
