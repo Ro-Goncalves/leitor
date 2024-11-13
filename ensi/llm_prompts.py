@@ -39,35 +39,67 @@ def gerar_sumario(texto_artigo):
     except Exception as e:
         st.error(f"Ocorreu um erro: {e}")
         
-def traduzir(texto_menu):
+def traduzir(texto_original):
     prompt = f"""
+        <texto_original>
+        {texto_original}
+        </texto_original>
+
         Atue como um tradutor profissional e especializado, com vasta experiência 
         em adaptar textos para diferentes contextos culturais e linguísticos. 
         Seu objetivo é fornecer uma tradução que preserve a intenção, o tom e a 
         estrutura do texto original, ao mesmo tempo em que soa natural e autêntica 
-        para o público do idioma de destino.
+        para o público do idioma PORTUGÊS BRASILEIRO.
 
-        # Instruções e Contexto:
+        **Instruções e Contexto:**
         
-        - Identificação do Texto e Propósito:
+        - Adaptação Cultural e Linguística:
 
-            - Antes de começar a tradução, identifique o objetivo do texto original. 
-            Ele é informativo, instrutivo, publicitário, ou de entretenimento?
-            - Quem é o público-alvo (ex.: jovens, profissionais, público geral)?
-        Qual o tom desejado para a tradução (formal, informal, técnico, casual)?
-        Adaptação Cultural e Linguística:
+            - Mantenha a tradução fiel ao estilo e tom do autor.
+            - Adapte expressões coloquiais, gírias e referências culturais para o 
+            idioma PORTUGÊS BRASILEIRO, preservando o impacto e a naturalidade.
+            - No caso de termos técnicos ou específicos, adapte para que o público 
+            compreenda sem dificuldades.
+       
+        - Preservação de Estrutura e Fluidez:
 
-        Mantenha a tradução fiel ao estilo e tom do autor. Adapte expressões coloquiais, gírias e referências culturais para o idioma de destino, preservando o impacto e a naturalidade.
-        No caso de termos técnicos ou específicos, pesquise e adapte para que o público compreenda sem dificuldades.
-        Exemplo de Tradução:
+            - Respeite a estrutura original onde for necessário, mas ajuste a ordem ou 
+            formato para que o texto fique fluido e legível no idioma PORTUGÊS BRASILEIRO.
+       
+        **Mantenha a precisão, o tom e a fluidez do conteúdo, assegurando que a tradução 
+        seja compreensível e fiel ao propósito original.**
 
-        Original: "Ei, pessoal, tudo bem? Hoje vou mostrar como criar um site em apenas 5 minutos!"
-        Tradução esperada: "Hey everyone, how’s it going? Today, I’m going to show you how to create a website in just 5 minutes!"
-        Preservação de Estrutura e Fluidez:
-
-        Respeite a estrutura original onde for necessário, mas ajuste a ordem ou formato para que o texto fique fluido e legível no idioma de destino.
-        Aqui está o texto para tradução:
-        '[texto]'
-
-        Por favor, mantenha a precisão, o tom e a fluidez do conteúdo, assegurando que a tradução seja compreensível e fiel ao propósito original.
+        O texto para tradução está em <texto_original>
     """
+
+    try:
+        completion = gemini.complete(prompt).text       
+        return completion
+    except Exception as e:
+        st.error(f"Ocorreu um erro: {e}")
+
+def organizar(texto_original):
+    prompt = f"""
+        <texto_original>
+        {texto_original}
+        </texto_original>    
+        
+        Atue como um editor de texto profissional especializado em revisão e formatação. Seu 
+        papel é transformar blocos de texto técnico em um formato claro, organizado e de 
+        fácil leitura, segmentando ideias em parágrafos bem definidos e coesos.
+
+        Objetivo: Organize o conteúdo em <texto_original>, estruturando o texto em parágrafos 
+        distintos e claros.
+
+        Nota: Verifique a consistência do texto e mantenha um estilo técnico, respeitando a 
+        terminologia e o tom original. Após a formatação, certifique-se de que as ideias fluam 
+        naturalmente de um parágrafo ao outro.
+
+        Respire fundo e organize o texto passo a passo.
+    """
+
+    try:
+        completion = gemini.complete(prompt).text       
+        return completion
+    except Exception as e:
+        st.error(f"Ocorreu um erro: {e}")    
