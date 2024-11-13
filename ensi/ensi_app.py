@@ -2,14 +2,19 @@ from docling.document_converter import DocumentConverter
 import streamlit as st
 import os, base64
 from ensi.llm_prompts import gerar_sumario
+from ensi.utils.menu_extractor import extract_menu_content
 
 def status_inicial():
     if 'texto_exportado' not in st.session_state:
         st.session_state.texto_exportado = ""
     if 'sumario_artigo' not in st.session_state:
-        st.session_state.sumario_artigo = []
-    if 'error_store' not in st.session_state:
-        st.session_state.error_store = None
+        st.session_state.sumario_artigo = ()
+    if 'bloquear_opcoes_exportacao' not in st.session_state:
+        st.session_state.bloquear_opcoes_exportacao = False
+    if 'menu_selecionado' not in st.session_state:
+        st.session_state.menu_selecionado = False
+    if 'texto_menu' not in st.session_state:
+        st.session_state.texto_menu = ""
 
 def list_articles():
     """
@@ -52,6 +57,8 @@ def main():
     
     
     with st.sidebar:
+        
+        st.subheader("PDF Para Texto")
         # Lista os artigos disponíveis
         articles = list_articles()
         
@@ -64,36 +71,53 @@ def main():
         
         # Campo de seleção
         selected_article = st.sidebar.selectbox(
-            "Escolha um artigo para ler:",
-            articles_with_empty
+            label="Escolha um artigo para ler:",
+            options=articles_with_empty,
+            disabled=st.session_state.bloquear_opcoes_exportacao
         )
 
-        col_exportar, col_sumario, col_processar = st.columns(3)
-
+        col_exportar, col_sumario = st.columns(2)
+        
         with col_exportar:
-            if st.button("Exportar", use_container_width=True):
+            if st.button(
+                label="Exportar", 
+                disabled=st.session_state.bloquear_opcoes_exportacao,
+                use_container_width=True):
+                
                 st.session_state.texto_exportado = read_article(selected_article)
 
         with col_sumario:
-            if st.button("Sumarizar", use_container_width=True):
-                if not st.session_state.sumario_artigo:                
-                    st.session_state.sumario_artigo = gerar_sumario(st.session_state.texto_exportado)            
+            if st.button(
+                label="Sumarizar",
+                disabled=st.session_state.bloquear_opcoes_exportacao,
+                use_container_width=True):
                 
-                for menu in st.session_state.sumario_artigo:
-                    st.write(menu)
-
-        with col_processar:
-            if st.button("Processar", use_container_width=True):
+                st.session_state.sumario_artigo=gerar_sumario(st.session_state.texto_exportado)
+                
+                st.session_state.bloquear_opcoes_exportacao=True
+                st.rerun()
+               
+        if st.session_state.sumario_artigo:
+            
+            st.markdown("---")            
+            st.subheader("Opções Estudo")
+            
+            st.session_state.menu_selecionado = st.selectbox(
+                "Escolha uma opção:",
+                ["Selecione um menu..."] + st.session_state.sumario_artigo
+            )
+            
+           
+            if st.button("Traduzir", use_container_width=True):
                 st.write("Processado")
+                
+            st.markdown("---")
         
         st.button("Reiniciar", use_container_width=True)
-
-        st.divider()
         
-        if st.session_state.error_store:
-            st.error(st.session_state.error_store)
-    
     if st.session_state.texto_exportado:
+        
+        st.subheader("Artigo original e texto exportado")
 
         col_pdf, col_texto = st.columns(2)
 
@@ -106,6 +130,14 @@ def main():
 
         with col_texto:
             st.session_state.texto_exportado = st.text_area("", value=st.session_state.texto_exportado, height=600)
+            
+    if st.session_state.menu_selecionado and (st.session_state.menu_selecionado != "Selecione um menu..."):
+        
+        st.subheader(f"Aprendendo com {st.session_state.menu_selecionado}")
+        
+        st.session_state.texto_menu = extract_menu_content(st.session_state.texto_exportado, st.session_state.menu_selecionado)
+        st.markdown(st.session_state.texto_menu)
+    
         
         
 
